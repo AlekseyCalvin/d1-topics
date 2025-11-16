@@ -45,7 +45,7 @@ def parse_args():
         default="/data0/devaansh",
         help="Directory to save model checkpoints and logs",
     )
-    parser.add_argument("--job_name", type=str, default="llada-s1", help="Job Name")
+    parser.add_argument("--job_name", type=str, default="Lyrical_DLLM1", help="Job Name")
     parser.add_argument("--train_data", type=str, default="AlekseyCalvin/Lyrical_Ru2En_Poems_Songs_MeterMatched_csv_SFT", help="Path to training data")
     parser.add_argument(
         "--debugging", action="store_true", help="Use while debugging model - only disables wandb logging"
@@ -71,14 +71,14 @@ def load_model_and_tokenizer(args):
 
     quantization_config = BitsAndBytesConfig(
     load_in_4bit=True,
-    bnb_4bit_quant_type="nf4",
+    bnb_4bit_quant_type="fp4",
     bnb_4bit_compute_dtype="bfloat16"
 )
 
     # LoRA configuration
     lora_config = LoraConfig(
-        r=128,
-        lora_alpha=256,
+        r=32,
+        lora_alpha=64,
         target_modules=["q_proj", "k_proj", "v_proj"],
         lora_dropout=0.05,
         bias="none",
