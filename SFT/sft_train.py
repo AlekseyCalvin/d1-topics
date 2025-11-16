@@ -46,7 +46,7 @@ def parse_args():
         help="Directory to save model checkpoints and logs",
     )
     parser.add_argument("--job_name", type=str, default="llada-s1", help="Job Name")
-    parser.add_argument("--train_data", type=str, default="simplescaling/s1K", help="Path to training data")
+    parser.add_argument("--train_data", type=str, default="AlekseyCalvin/Lyrical_Ru2En_Poems_Songs_MeterMatched_csv_SFT", help="Path to training data")
     parser.add_argument(
         "--debugging", action="store_true", help="Use while debugging model - only disables wandb logging"
     )
@@ -66,13 +66,13 @@ def load_model_and_tokenizer(args):
         args.model_name,
         trust_remote_code=True,
         quantization_config=quantization_config,
-        torch_dtype=torch.float16,
+        torch_dtype=torch.bfloat16,
     )
 
     quantization_config = BitsAndBytesConfig(
     load_in_4bit=True,
     bnb_4bit_quant_type="nf4",
-    bnb_4bit_compute_dtype="float16"
+    bnb_4bit_compute_dtype="bfloat16"
 )
 
     # LoRA configuration
@@ -123,7 +123,7 @@ def train_model(args, tokenizer, model):
         load_best_model_at_end=True,
         weight_decay=0.1,
         max_grad_norm=1.0,
-#        bf16=True,
+        bf16=True,
         report_to="wandb",
         remove_unused_columns=False,
     )
