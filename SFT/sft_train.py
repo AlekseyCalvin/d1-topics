@@ -1,12 +1,16 @@
 import torch
 import argparse
-from transformers import AutoTokenizer, AutoModel, TrainingArguments
+from transformers import AutoTokenizer, AutoModel, TrainingArguments, BitsAndBytesConfig
 from datasets import load_dataset
 from torch.utils.data import DataLoader
 from peft import LoraConfig, get_peft_model, TaskType
 import os
 from sft_trainer import *
 import torch.distributed as dist
+from transformers import AutoModel, AutoTokenizer, BitsAndBytesConfig
+
+
+
 import random
 import numpy as np
 
@@ -61,8 +65,15 @@ def load_model_and_tokenizer(args):
     model = AutoModel.from_pretrained(
         args.model_name,
         trust_remote_code=True,
-        torch_dtype=torch.bfloat16,
+        quantization_config=quantization_config,
+        torch_dtype=torch.float16,
     )
+
+    quantization_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype="float16"
+)
 
     # LoRA configuration
     lora_config = LoraConfig(
@@ -107,12 +118,12 @@ def train_model(args, tokenizer, model):
         eval_steps=100,
         logging_steps=2,
         save_steps=100,
-        save_total_limit=1,
+        save_total_limit=2,
         learning_rate=args.learning_rate,
         load_best_model_at_end=True,
         weight_decay=0.1,
         max_grad_norm=1.0,
-        bf16=True,
+#        bf16=True,
         report_to="wandb",
         remove_unused_columns=False,
     )
