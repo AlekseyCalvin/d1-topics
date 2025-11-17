@@ -132,9 +132,9 @@ def preprocess_dataset(data, tokenizer, max_length, test_split=0.01):
     preprocessed_data = []
     for i in tqdm(range(len(data)), desc="Preprocessing dataset"):
         question = SYSTEM_PROMPT + "\n\n" + data[i]["prompt"]
-        response = "\n\n" + data[i]["completion"]
+        answer = "\n\n" + data[i]["completion"]
         prompt = [{"role": "user", "content": question}]
-        response = [{"role": "assistant", "content": response}]
+        response = [{"role": "assistant", "content": answer}]
         inputs = tokenizer.apply_chat_template(prompt + response, tokenize=False)
         prompt = tokenizer.apply_chat_template(prompt, tokenize=False) + "\n"
         tokenized_input = tokenizer(
