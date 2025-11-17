@@ -7,8 +7,6 @@ from peft import LoraConfig, get_peft_model, TaskType
 import os
 from sft_trainer import *
 import torch.distributed as dist
-from transformers import AutoModel, AutoTokenizer, BitsAndBytesConfig
-
 
 
 import random
@@ -70,8 +68,7 @@ def load_model_and_tokenizer(args):
     )
 
     quantization_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_quant_type="fp4",
+    bnb_4bit_quant_type="fp8",
     bnb_4bit_compute_dtype="bfloat16"
 )
 
